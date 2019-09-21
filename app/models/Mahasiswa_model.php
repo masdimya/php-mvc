@@ -5,25 +5,38 @@
 class Mahasiswa_model 
 {
 	
-	private $dbh; //db handler
-	private $stmt; //store query
+	private $table ='tb_mhs';
+	private $db;
 
-
-	public function __construct(){
-		//db source name
-		$dsn = 'mysql:host=localhost;dbname=phpmvc';
-
-		try {
-		 	$this->dbh = new PDO($dsn,'root','');
-
-		 } catch (PDOException $e) {
-		 	die($e->getMessage());
-		 } 
+	public function __construct()
+	{
+		$this->db = new Database;
 	}
 
+	
 	public function getAllMahasiswa(){
-		$this->stmt = $this->dbh->prepare('SELECT * FROM tb_mhs');
-		$this->stmt->execute();
-		return $this->stmt->fetchAll(PDO::FETCH_ASSOC);
+		$this->db->query('SELECT * FROM ' . $this->table);
+		return $this->db->resultSet();
+	}
+
+	public function getMahasiswaById($id){
+		$this->db->query('SELECT * FROM '. $this->table . ' WHERE id=:id');
+		$this->db->bind('id',$id);
+		return $this->db->single();
+	}
+
+	public function tambahMahasiswaBaru($data){
+		$query = "INSERT INTO $tble VALUES('',:nama,:umur,:pekerjaan)";
+		$this->db->query($query);
+
+		$this->db->bind('nama',$data['nama']);
+		$this->db->bind('umur',$data['umur']);
+		$this->db->bind('pekerjaan',$data['pekerjaan']);
+
+		$this->db->execute();
+		return $this->db->rowCount();
+
+
+
 	}
 }
